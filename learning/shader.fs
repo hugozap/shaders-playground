@@ -21,10 +21,11 @@ void main() {
 
 	//Get the bezier point using current x as t
 	vec2 bpoint = bezier(uv.x, p0, p1, p2, p3 );
-    vec3 curvecolor = vec3(1, 0.3, 0.4) * plot(uv, bpoint.y) ;
+    vec3 curvecolor = vec3(1, 0.3, 0.4) * plot2(uv, bpoint.y, 0.2+sin(u_time)) ;
+    float c2 = circle(uv, 0.5, 0.3);
+    float c3 = circle(uv, 0.3, 0.3);
 
-
-	finalColor = finalColor *  circle(uv, 0.9) * random(uv+sin(u_time));
+	finalColor = finalColor * (c2 - c3) * random(uv+sin(u_time));
 	finalColor = mix(finalColor , curvecolor, abs(sin(u_time/2.)/3.));
 
 

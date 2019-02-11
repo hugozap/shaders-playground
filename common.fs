@@ -5,6 +5,12 @@ float plot(vec2 st, float pct) {
 
 }
 
+float plot2(vec2 st, float pct, float thick) {
+	return smoothstep(pct-thick, pct, st.y) -
+		   smoothstep(pct, pct + thick, st.y);
+
+}
+
 /* Maps a value from one scale to another */
 float map(float v, float s1, float s2, float t1, float t2) {
 	//get the percentage for the first interval
@@ -34,6 +40,13 @@ float circle(in vec2 _st, in float _radius){
     vec2 dist = _st-vec2(0.5);
 	return 1.-smoothstep(_radius-(_radius*0.01),
                          _radius+(_radius*0.01),
+                         dot(dist,dist)*4.0);
+}
+
+float circle(in vec2 _st, in float _radius, float diffuse){
+    vec2 dist = _st-vec2(0.5);
+	return 1.-smoothstep(_radius-(_radius*diffuse),
+                         _radius+(_radius*diffuse),
                          dot(dist,dist)*4.0);
 }
 

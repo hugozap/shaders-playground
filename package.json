@@ -1,0 +1,12 @@
+{
+  "name": "shaders",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:hugozap/shaders-playground.git",
+  "author": "Hugo Zapata <hugozap@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+  	"start": "http-server ."
+  }
+}

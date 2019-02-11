@@ -15,10 +15,26 @@ float map(float v, float s1, float s2, float t1, float t2) {
 	return t1 + l2 * factor; // calculate point in 2 interval for the same factor.
 }
 
+float random (vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}
+
+
 
 float circle(vec2 st, vec2 center, float r) {
 	float d = distance(st, center);
-	return d < r ? 1. : 0.;
+	return 1. - smoothstep(0., r, d);
+	//return d < r ? 1. : 0.;
+}
+
+
+float circle(in vec2 _st, in float _radius){
+    vec2 dist = _st-vec2(0.5);
+	return 1.-smoothstep(_radius-(_radius*0.01),
+                         _radius+(_radius*0.01),
+                         dot(dist,dist)*4.0);
 }
 
 vec2 bezier(in float t, vec2 p0, vec2 p1, vec2 p2, vec2 p3) {
@@ -29,6 +45,15 @@ vec2 bezier(in float t, vec2 p0, vec2 p1, vec2 p2, vec2 p3) {
 			  +  3. * pow(1.0-t, 2.)*t*p1
 			  + 3. * (1. - t) * pow(t, 2.)*p2
 			  + pow(t, 3.)*p3;
+}
+
+vec4 toBezier(float delta, int i, vec4 P0, vec4 P1, vec4 P2, vec4 P3)
+{
+    float t = delta * float(i);
+    float t2 = t * t;
+    float one_minus_t = 1.0 - t;
+    float one_minus_t2 = one_minus_t * one_minus_t;
+    return (P0 * one_minus_t2 * one_minus_t + P1 * 3.0 * t * one_minus_t2 + P2 * 3.0 * t2 * one_minus_t + P3 * t2 * t);
 }
 
 // float bezier(vec2 st, vec2 p0, vec2 p1, vec2 p2, vec2 p3) {

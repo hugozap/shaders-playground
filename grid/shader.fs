@@ -17,10 +17,10 @@ float wood(vec2 st) {
 }
 
 float lines(vec2 st) {
-	float val = sin(st.x*50.* snoise(st*3.0));
+	float val = sin(st.x*200.);
 	// if val is 1 draw line
 	float f = step(0.99, val);
-	return f;
+	return f * snoise(st);
 }
 
 void main() {
@@ -30,7 +30,7 @@ void main() {
 
 	//content area
 	vec3 baseWoodColor = vec3(0.9, 0.8, 0);
-	float content = lines(uv);
+	float content = lines(uv) + lines(uv*rotate2d(3.14/2.));
 	vec3 contentColor = mix( 1. - content * vec3(1,1.,1.), baseWoodColor, 0.5);
 	vec3 finalColor;
 

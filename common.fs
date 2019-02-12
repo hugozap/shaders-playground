@@ -175,3 +175,15 @@ vec4 toBezier(float delta, int i, vec4 P0, vec4 P1, vec4 P2, vec4 P3)
 
 
 // }
+
+float horizontallines(vec2 st) {
+    float val = sin(st.x*50.* snoise(st*3.0));
+    // if val is 1 draw line
+    float f = step(0.99, val);
+    return f;
+}
+
+mat2 rotate2d(float _angle){
+    return mat2(cos(_angle),-sin(_angle),
+                sin(_angle),cos(_angle));
+}

@@ -1,4 +1,6 @@
 
+#define PI 3.1415
+
 float plot(vec2 st, float pct) {
 	return smoothstep(pct-0.02, pct, st.y) -
 		   smoothstep(pct, pct + 0.02, st.y);
@@ -186,4 +188,19 @@ float horizontallines(vec2 st) {
 mat2 rotate2d(float _angle){
     return mat2(cos(_angle),-sin(_angle),
                 sin(_angle),cos(_angle));
+}
+
+float sketchylines(vec2 st) {
+    float val = sin(st.x*50. + snoise(st)*0.2);
+    // if val is 1 draw line
+    float f = smoothstep(0.9, 1., val);
+    return f;
+}
+
+
+float twirllines(vec2 st, float u_time) {
+    float val = sin(st.x*50.* snoise(st)* 3.);
+    // if val is 1 draw line
+    float f = smoothstep(0.99 * sin(u_time), 1. , val);
+    return f;
 }

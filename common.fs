@@ -1,5 +1,5 @@
 
-#define PI 3.1415
+#define PI 3.14159265359
 
 float plot(vec2 st, float pct) {
 	return smoothstep(pct-0.02, pct, st.y) -
@@ -159,24 +159,6 @@ vec4 toBezier(float delta, int i, vec4 P0, vec4 P1, vec4 P2, vec4 P3)
     float one_minus_t2 = one_minus_t * one_minus_t;
     return (P0 * one_minus_t2 * one_minus_t + P1 * 3.0 * t * one_minus_t2 + P2 * 3.0 * t2 * one_minus_t + P3 * t2 * t);
 }
-
-// float bezier(vec2 st, vec2 p0, vec2 p1, vec2 p2, vec2 p3) {
-
-// 	// calculrar el t equivalente para la posicion
-// 	float t = map(st.x, 0., 1., p0.x, p3.x);
-
-// 	// si estamos fuera
-// 	if ( t < 0 || t > 1) {
-// 		return 0;
-// 	}
-
-// 	vec2 b = pow(1.0 - t, 3.) * p0
-// 			  +  3. * pow(1.0-t, 2.)*t*p1
-// 			  + 3. * (1. - t) * pow(t, 2.)*p2
-// 			  + pow(t, 3.)*p3;
-
-
-// }
 
 float horizontallines(vec2 st) {
     float val = sin(st.x*50.* snoise(st*3.0));

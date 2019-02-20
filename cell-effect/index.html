@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Shaders</title>
+	<style>
+	body {
+		margin:0;
+		padding:0;	
+	}
+	.desc {
+		position:absolute;
+		top:0;
+	}
+</style>
+</head>
+<body>
+	<p class="desc">
+		
+	</p>
+	<script src="../three.js"></script>
+
+	<div id="container"></div>
+
+	<script>
+		var container;
+		var camera, scene, renderer;
+		var uniforms;
+		(async function(){
+			await init();
+			await animate();
+		})();
+
+
+		async function init() {
+			const fragmentresp = await fetch(`./shader.fs?${new Date().getTime()}`);
+			
+			// load base utils
+			const commonvsresp = await fetch(`../common.vs?${new Date().getTime()}`)
+			const commonvs = await commonvsresp.text();
+
+			const commonfsresp = await fetch(`../common.fs?${new Date().getTime()}`)
+			const commonfs = await commonfsresp.text();
+
+			let fragment = await fragmentresp.text();
+			const vertexresp = await fetch(`./shader.vs?${new Date().getTime()}`);
+			let vertex = await vertexresp.text();
+
+			vertex = commonvs + '\n' + vertex;
+			fragment = commonfs + '\n' + fragment;
+			console.log('frag', fragment);
+			console.log('vr', vertex);
+
+			container = document.querySelector('#container');
+			camera = new THREE.Camera();
+			camera.position.z = 1;
+			scene = new THREE.Scene();
+			var geometry = new THREE.PlaneBufferGeometry(2, 2);
+			uniforms = {
+				u_time: {type: "f", value: 1.0},
+				u_resolution: {type:"v2", value: new THREE.Vector2()}
+			};
+
+			var material = new THREE.ShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: vertex,
+				fragmentShader: fragment,
+			});
+
+			var mesh = new THREE.Mesh( geometry, material );
+			scene.add(mesh);
+			renderer = new THREE.WebGLRenderer();
+			renderer.setPixelRatio(window.devicePixelRatio);
+			container.appendChild(renderer.domElement);
+			onWindowResize();
+			window.addEventListener('resize', onWindowResize, false);
+		}
+
+		function onWindowResize( event ) {
+			renderer.setSize( window.innerWidth, window.innerHeight);
+			uniforms.u_resolution.value.x = renderer.domElement.width;
+			uniforms.u_resolution.value.y = renderer.domElement.height;
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			render();
+		}
+
+		function render() {
+			uniforms.u_time.value += 0.05;
+			renderer.render(scene, camera);
+		}
+	</script>
+</body>
+</html>

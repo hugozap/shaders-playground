@@ -118,6 +118,18 @@ float frame(vec2 st) {
     return pct;
 }
 
+float smoothframe(vec2 st) {
+    // bottom-left
+    vec2 bl = smoothstep(0., 0.1, st);
+    float pct = bl.x * bl.y;
+
+    // top-right
+    vec2 tr = smoothstep(0., 0.1, 1.0-st);
+    pct *= tr.x * tr.y;
+    return pct;
+}
+
+
 
 
 float circle(vec2 st, vec2 center, float r) {

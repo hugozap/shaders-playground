@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Shaders</title>
+	<style>
+	body {
+		margin:0;
+		padding:0;	
+	}
+</style>
+</head>
+<body>
+	<script src="../three.js"></script>
+
+	<div id="container"></div>
+
+	<script>
+		var container;
+		var camera, scene, renderer;
+		var uniforms;
+		var mesh, mesh2;
+		(async function(){
+			await init();
+			await animate();
+		})();
+
+
+		async function init() {
+			const fragmentresp = await fetch(`./shader.fs?${new Date().getTime()}`);
+			
+			// load base utils
+			const commonvsresp = await fetch(`../common.vs?${new Date().getTime()}`)
+			const commonvs = await commonvsresp.text();
+
+			const commonfsresp = await fetch(`../common.fs?${new Date().getTime()}`)
+			const commonfs = await commonfsresp.text();
+
+			let fragment = await fragmentresp.text();
+			const vertexresp = await fetch(`./shader.vs?${new Date().getTime()}`);
+			let vertex = await vertexresp.text();
+
+			vertex = commonvs + '\n' + vertex;
+			fragment = commonfs + '\n' + fragment;
+			console.log('frag', fragment);
+			console.log('vr', vertex);
+
+			container = document.querySelector('#container');
+			camera = new THREE.PerspectiveCamera(35, window.innerWidth/ window.innerHeight, 300, 10000);
+			camera.position.z = 200;
+			scene = new THREE.Scene();
+
+			//var geometry = new THREE.PlaneBufferGeometry(200, 100);
+			var geometry = new THREE.SphereGeometry(50, 20, 20);
+			var geometry2 = new THREE.BoxGeometry(50, 50, 50);
+			var light = new THREE.AmbientLight(0xffffff, 0.2);
+			scene.add(light);
+
+			uniforms = {
+				u_time: {type: "f", value: 1.0},
+				u_resolution: {type:"v2", value: new THREE.Vector2()}
+			};
+
+			var material = new THREE.ShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: vertex,
+				fragmentShader: fragment,
+			});
+
+			var colMat = new THREE.MeshBasicMaterial({color:0xffff});
+
+		     mesh = new THREE.Mesh( geometry, material );
+			 mesh2 = new THREE.Mesh( geometry2, material );
+
+			mesh.position.z =  -400;
+			mesh.position.x = 0;
+
+			mesh2.position.z = -400;
+			mesh2.position.x = 100;
+
+			mesh2.rotateZ(Math.PI * 0.5);
+			scene.add(mesh);
+			scene.add(mesh2);
+			renderer = new THREE.WebGLRenderer();
+			renderer.setPixelRatio(window.devicePixelRatio);
+			container.appendChild(renderer.domElement);
+			onWindowResize();
+			window.addEventListener('resize', onWindowResize, false);
+		}
+
+		function onWindowResize( event ) {
+			renderer.setSize( window.innerWidth, window.innerHeight);
+			uniforms.u_resolution.value.x = renderer.domElement.width;
+			uniforms.u_resolution.value.y = renderer.domElement.height;
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			mesh2.rotateZ(Math.PI *  Math.sin(uniforms.u_time.value)/100);
+			render();
+		}
+
+		function render() {
+			uniforms.u_time.value += 0.05;
+			renderer.render(scene, camera);
+		}
+	</script>
+</body>
+</html>

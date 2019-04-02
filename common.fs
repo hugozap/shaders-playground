@@ -118,6 +118,17 @@ float frame(vec2 st) {
     return pct;
 }
 
+float sdBox( in vec2 p, in vec2 b )
+{
+    vec2 d = abs(p)-b;
+    return length(max(d,vec2(0))) + min(max(d.x,d.y),0.0);
+}
+
+float box(in vec2 p, in vec2 b) {
+    return (1. - step(b.x, p.x))
+    * (1. - step(b.y, p.y));
+}
+
 float smoothframe(vec2 st) {
     // bottom-left
     vec2 bl = smoothstep(0., 0.1, st);
@@ -213,4 +224,11 @@ vec3 hsb2rgb( in vec3 c ){
     return c.z * mix(vec3(1.0), rgb, c.y);
 }
 
+
+//  Function from Iñigo Quiles
+//  www.iquilezles.org/www/articles/functions/functions.htm
+float impulse( float k, float x ){
+    float h = k*x;
+    return h*exp(1.0-h);
+}
 
